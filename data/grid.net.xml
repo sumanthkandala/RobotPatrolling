@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on Wed Sep  5 16:05:53 2018 by SUMO netconvert Version 0.25.0
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
+
+    <input>
+        <node-files value="grid.nod.xml"/>
+        <edge-files value="grid.edg.xml"/>
+    </input>
+
+    <output>
+        <output-file value="grid.net.xml"/>
+    </output>
+
+</configuration>
+-->
+
+<net version="0.25" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
+
+    <location netOffset="0.00,0.00" convBoundary="0.00,0.00,10.00,100.00" origBoundary="0.00,0.00,990.00,900.00" projParameter="!"/>
+
+    <edge id="0to1" from="0" to="1" priority="-1">
+        <lane id="0to1_0" index="0" speed="13.90" length="100.50" shape="1.64,-0.16 11.64,99.84"/>
+    </edge>
+
+    <junction id="0" type="unregulated" x="0.00" y="0.00" incLanes="" intLanes="" shape="0.05,-0.00 3.23,-0.32"/>
+    <junction id="1" type="unregulated" x="10.00" y="100.00" incLanes="0to1_0" intLanes="" shape="13.23,99.68 10.05,100.00"/>
+
+</net>

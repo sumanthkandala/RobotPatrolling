@@ -1,0 +1,40 @@
+1 robot - 200
+1
+
+2 robot - 200
+2
+
+4 robot - 200 
+4
+No convergance
+##################
+
+1 rboot 400
+1
+
+2 robot 400
+2
+
+4 robot 400
+4 I avg = 131.345 
+
+#####################
+
+1 robot 600
+2
+
+2 robot 600
+4 - area I avg = 167
+
+4 robot - 600
+Iavg = 131.466
+
+#####################
+1 robot 800
+4 nodes - perimeter
+
+2 robots 800
+I avg = 164.796
+
+4 robots - 800
+I avg = 130.125

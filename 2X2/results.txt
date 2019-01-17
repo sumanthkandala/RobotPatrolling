@@ -1,0 +1,41 @@
+1 robot - 200
+upload heatmap, no Iavg (doesn't converge)
+
+2 robot - 200
+doesn't converge
+
+4 robots - 200
+doesn't coverge
+####################################
+1 robot - 400
+doesn't converge
+2 nodes
+
+2 robots - 400
+4 nodes Iavg = 1313
+
+4 robots - 400
+4 nodes I avg = 114
+######################################
+1 robot - 600
+doesn't converge 
+2 nodes
+
+2 robots - 600
+I avg = 154, 4 nodes 
+
+
+4 robots - 600 
+I avg = 116 4 nodes
+##########################################
+1 robot - 800
+doesn't converge
+4 nodes
+
+2 robot - 800
+converges 4 nodes I avg = 183 
+
+4 robots - 800
+coverges 4 nodes
+I avg = 122
+##########################################

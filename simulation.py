@@ -48,38 +48,36 @@ class simulation:
 		self.min_y = 0
 		self.heatmap = []
 		self.size = 100
-		self.shortest_path = self.size*(len(self.node.nodes))*np.ones((len(self.node.nodes),len(self.node.nodes)))
+		self.shortest_path = self.size*((len(self.node.nodes))**2)*np.ones((len(self.node.nodes),len(self.node.nodes)))
 		#Generate routes
 		def gen_route():
 			self.lanes = traci.lane.getIDList()
-			print(self.lanes)
 			for lane in self.lanes:
 			    if lane.find(":") == -1:
 			        self.routes.append("."+lane[:-2]+".")
 			        traci.route.add(str(lane[:-2]),[str(lane[:-2])])
 
-		def get_path_list(Tree,routes_list):
+		def get_path_list(Tree, routes_list):
 			path_tree = []
 			start_node = Tree.path
 			distance = Tree.distance
-			if distance > 0:
-				for edge in routes_list:
-					if edge.find(":") == -1 and edge.find("."+str(start_node[len(start_node)-1])+"to") != -1:
-						temp = tree()
-						temp.path.extend(start_node)
-						temp.path.append(int(edge[len("."+str(start_node[len(start_node)-1])+"to"):-1]))
-						temp.distance = (distance - traci.lane.getLength(edge[1:-1]+"_0")/10)
-						temp_tree = get_path_list(temp,routes_list)
-						if temp.distance >= 0:
-							for added_path in temp_tree:
-								path_tree.append(added_path)
-							path_tree.append(temp.path)
+			for edge in routes_list:
+				if edge.find(":") == -1 and edge.find("."+str(start_node[len(start_node)-1])+"to") != -1:
+					temp = tree()
+					temp.path.extend(start_node)
+					temp.path.append(int(edge[len("."+str(start_node[len(start_node)-1])+"to"):-1]))
+					temp.distance = (distance - traci.lane.getLength(edge[1:-1]+"_0")/10)
+					if temp.distance >= 0:
+						temp_tree = get_path_list(temp, routes_list)
+						for added_path in temp_tree:
+							path_tree.append(added_path)
+						path_tree.append(temp.path)
 			return path_tree
 
 		def getpaths():
-			min_path = self.node.nodes[:,3]
-			max_path = max(min_path[np.where(self.node.nodes[:,2] == 0)])
-			min_path = min(min_path[np.where(self.node.nodes[:,2] == 0)])
+			time_periods = self.node.nodes[:,3]
+			max_path = max(time_periods[np.where(self.node.nodes[:,2] == 1)])
+			min_path = min(time_periods[np.where(self.node.nodes[:,2] == 1)])
 			path_exists = os.path.exists("paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt")
 			if path_exists == False:
 				for node_id in (self.node).interest_nodes:
@@ -118,23 +116,9 @@ class simulation:
 					self.min_x = x
 				if y<self.min_y:
 					self.min_y = y
-			print(self.min_x,self.min_y)
 			self.heatmap = np.zeros((int(self.max_x-self.min_x)/self.size+1,int(self.max_y-self.min_y)/self.size+1))
-			print(self.heatmap.shape)
-			# for node in (self.node).interest_nodes:
-			# 	for lane in self.routes:
-			# 		if lane.find(":") == -1 and lane.find("to"+str(node)+".") != -1:
-			# 			lane = lane[1:-1]
-			# 			veh = vehicle.addVehicle(lane,self.speed,len(self.vehicles),(self.node).num_nodes)
-			# 			self.vehicles.append(veh)
-			# 			break
-			print((self.node).num_nodes)
 			veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed)
 			self.vehicles.append(veh)
-			# veh = vehicle.addVehicle("3to6",(self.node).num_nodes,len(self.vehicles),self.speed)
-			# self.vehicles.append(veh)
-			# veh = vehicle.addVehicle("5to2",(self.node).num_nodes,len(self.vehicles),self.speed)
-			# self.vehicles.append(veh)
 			veh = vehicle.addVehicle("7to8",(self.node).num_nodes,len(self.vehicles),self.speed)
 			self.vehicles.append(veh)
 			self.node.setup()
@@ -144,35 +128,35 @@ class simulation:
 		def step():
 			if traci.simulation.getMinExpectedNumber()>0:
 				#Increment time
-			    traci.simulationStep()
-			    #Populate the list of departed vehicles
-			    for veh_id in traci.simulation.getDepartedIDList():
-			    	(self.departed).append(veh_id)
-
-			    #Update params of the vehicles
-			    for veh_id in self.departed:
-			    	curr_vehicle = self.vehicles[int(veh_id)]
-			    	curr_vehicle.updateParams()
-
-			    for node in range(len(self.node.nodes)):
-			    	x = int(traci.junction.getPosition(str(node))[0])
-			    	y = int(traci.junction.getPosition(str(node))[1])
-			    	self.heatmap[int((x-self.min_x)/self.size),int((y-self.min_y)/self.size)] = self.total_time/self.node.visited[node]
-			    #Call the algorithm for assigning nodes
-			    self.node.nodes = patrolling.algo(self.departed,self.vehicles,self.node,self.routes,self.paths,self.shortest_path)
-			    #Increase the idleness
-			    self.node.nodes[:,1] = (self.node.nodes[:,1]+1)	
+				traci.simulationStep()
+				#Populate the list of departed vehicles
+				for veh_id in traci.simulation.getDepartedIDList():
+					(self.departed).append(veh_id)
+				#Update params of the vehicles
+				for veh_id in self.departed:
+					curr_vehicle = self.vehicles[int(veh_id)]
+					curr_vehicle.updateParams()
+				#Create the heatmap
+				for node in range(len(self.node.nodes)):
+					x = int(traci.junction.getPosition(str(node))[0])
+					y = int(traci.junction.getPosition(str(node))[1])
+					self.heatmap[int((x-self.min_x)/self.size),int((y-self.min_y)/self.size)] = self.total_time/self.node.visited[node]
+				#Increase the idleness
+				self.node.nodes[:, 1] = self.node.nodes[:, 1] + 1
+				for node_id in self.node.interest_nodes:
+					self.node.nodes[node_id,4] = self.node.nodes[node_id,3] - self.node.nodes[node_id,1]
+				#Call the algorithm for assigning nodes
+				self.node.nodes = patrolling.hnip(self.departed,self.vehicles,self.node,self.routes,self.paths,self.shortest_path)
 		self.step = step
 
 
 def simulate():
 	simulator = simulation()
 	simulator.setup()
-	max_freq = str(int(max(simulator.node.nodes[np.where(simulator.node.nodes[:,2] == 0),3][0])))
-	#print("max_freq",max_freq)
+	max_freq = str(int(max(simulator.node.nodes[np.where(simulator.node.nodes[:,1] == 0),2][0])))
 
 	with open("idleness_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as file:
-		with open("time_imp_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as imp_file:
+		with open("t_imp_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as imp_file:
 			writer = csv.writer(file)
 			writer.writerow(['time','node','idleness'])
 			writer_imp = csv.writer(imp_file)
@@ -181,25 +165,12 @@ def simulate():
 				simulator.step()
 				simulator.curr_time = simulator.curr_time + 1
 				for node in range(len(simulator.node.nodes)):
-					row = simulator.curr_time,node,simulator.node.nodes[node,1]
+					row = simulator.curr_time,node,simulator.node.nodes[node,0]
 					writer.writerow(row)
 				for node in simulator.node.interest_nodes:
-					row = simulator.curr_time,node,simulator.node.nodes[node,3]-simulator.node.nodes[node,1]
-					writer_imp.writerow(row)	
-				print(np.mean(simulator.node.nodes[:,1]))
-
-
-	#print(simulator.node.visited)
-	with open("time_patrolling_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as file:
-		writer = csv.writer(file)
-		node_id = 0
-		for count in simulator.node.visited:
-			row = node_id,count
-			node_id = node_id + 1
-			writer.writerow(row)
-	print(simulator.heatmap.transpose())
+					row = simulator.curr_time,node,simulator.node.nodes[node,3]
+					writer_imp.writerow(row)
 	sns.heatmap(simulator.heatmap.transpose(),vmin=0,vmax=max(simulator.total_time/simulator.node.visited),cbar_kws={'label': 'Idleness'}).invert_yaxis()
-	# plt.tight_layout(rect=[0, 0, 1, 1])
 	plt.xlabel('X Co-ordinate')
 	plt.ylabel('Y Co-ordinate')
 	plt.savefig("heatmap"+str(len(simulator.vehicles))+"_"+max_freq+".png")

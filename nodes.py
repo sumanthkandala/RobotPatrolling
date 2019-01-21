@@ -26,17 +26,19 @@ import vehicleControl
 class node:
 	def __init__(self):
 		self.num_nodes = 9
-		self.nodes = np.ones((self.num_nodes,6))
+		self.nodes = np.zeros((self.num_nodes,6))
 		self.interest_nodes = [0,2,6,8]
 		self.targets = []
 		self.visited = np.zeros(self.num_nodes)
 
 		def setup():
-			for i in range(0,self.num_nodes):
-				self.nodes[i][0] = i #Node ID
+			for node_id in range(self.num_nodes):
+				self.nodes[node_id][0] = node_id
 			for node_id in self.interest_nodes:
-				self.nodes[node_id][1] = 1 #Idleness
-				self.nodes[node_id][2] = 0	#Node of interest or not
-				self.nodes[node_id][3] = 42 #Timeperiod25.0
-				self.nodes[node_id][4] = 0 
+				self.nodes[node_id][1] = 0 #Idleness
+				self.nodes[node_id][2] = 1 #1 indicates a node of interest
+				self.nodes[node_id][3] = 42 #Timeperiod
+				self.nodes[node_id][4] = 0 #T_importance
+				self.nodes[node_id][5] = 1 #1 == Unvisited
+			#self.nodes[6][3] = 41
 		self.setup = setup

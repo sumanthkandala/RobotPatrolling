@@ -18,16 +18,15 @@ try:
 except ImportError:
     sys.exit(
         "please declare environment variable 'SUMO_HOME' as the root directory of your sumo installation (it should contain folders 'bin', 'tools' and 'docs')")
-
 import traci
 import traci.constants as tc
 import vehicleControl
 
 class node:
 	def __init__(self):
-		self.num_nodes = 9
+		self.num_nodes = 25
 		self.nodes = np.zeros((self.num_nodes,6))
-		self.interest_nodes = [0,2,6,8]
+		self.interest_nodes = [0,4,20,24]
 		self.targets = []
 		self.visited = np.zeros(self.num_nodes)
 
@@ -37,7 +36,7 @@ class node:
 			for node_id in self.interest_nodes:
 				self.nodes[node_id][1] = 0 #Idleness
 				self.nodes[node_id][2] = 1 #1 indicates a node of interest
-				self.nodes[node_id][3] = 42 #Timeperiod
+				self.nodes[node_id][3] = 4 #Timeperiod
 				self.nodes[node_id][4] = 0 #T_importance
 				self.nodes[node_id][5] = 1 #1 == Unvisited
 			#self.nodes[6][3] = 41

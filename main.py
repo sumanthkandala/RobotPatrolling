@@ -13,7 +13,6 @@ try:
 except ImportError:
     sys.exit(
         "please declare environment variable 'SUMO_HOME' as the root directory of your sumo installation (it should contain folders 'bin', 'tools' and 'docs')")
-
 import traci
 import traci.constants as tc
 import vehicleControl
@@ -42,6 +41,6 @@ if __name__ == "__main__":
 
     # this is the normal way of using traci. sumo is started as a
     # subprocess and then the python script connects and runs
-    traci.start([sumoBinary, "-c", "data/hello.sumocfg"])
+    traci.start([sumoBinary, "-c", "graph_data/hello.sumocfg"])
     #call the simulation function
     simulation.simulate()

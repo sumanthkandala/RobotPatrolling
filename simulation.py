@@ -40,7 +40,7 @@ class simulation:
 		self.paths = []
 		self.speed = 10
 		self.curr_time = 0
-		self.total_time = 3000
+		self.total_time = 300
 		self.node = nodes.node()
 		self.max_x = 0
 		self.max_y = 0
@@ -66,7 +66,7 @@ class simulation:
 					temp = tree()
 					temp.path.extend(start_node)
 					temp.path.append(int(edge[len("."+str(start_node[len(start_node)-1])+"to"):-1]))
-					temp.distance = (distance - traci.lane.getLength(edge[1:-1]+"_0")/10)
+					temp.distance = (distance - traci.lane.getLength(edge[1:-1]+"_0")/100)
 					if temp.distance >= 0:
 						temp_tree = get_path_list(temp, routes_list)
 						for added_path in temp_tree:
@@ -77,27 +77,26 @@ class simulation:
 		def getpaths():
 			time_periods = self.node.nodes[:,3]
 			max_path = max(time_periods[np.where(self.node.nodes[:,2] == 1)])
-			min_path = min(time_periods[np.where(self.node.nodes[:,2] == 1)])
-			path_exists = os.path.exists("paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt")
+			path_exists = os.path.exists("paths_list.txt")
 			if path_exists == False:
 				for node_id in (self.node).interest_nodes:
 					temp = tree()
 					temp.path.append(node_id)
 					temp.distance = max_path
 					self.paths = self.paths + (get_path_list(temp,self.routes))
-				with open("paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt","w") as file:
+				with open("paths_list.txt","w") as file:
 					file.write(str(self.paths))
 				for node_i in self.node.interest_nodes:
 					for node_j in self.node.interest_nodes:
 						for path in self.paths:
 							if path[0] == node_i and path[len(path)-1] == node_j and (path_length(path)<self.shortest_path[node_i,node_j]):
 								self.shortest_path[node_i,node_j] = int(path_length(path))
-				np.savetxt("shortest_paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt", self.shortest_path, fmt='%d')
+				np.savetxt("shortest_paths_list.txt", self.shortest_path, fmt='%d')
 
 			else:
-				with open("paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt","r") as file:
+				with open("paths_list.txt","r") as file:
 					self.paths = json.load(file)
-				self.shortest_path = np.loadtxt("shortest_paths_list_"+str(min_path)+str(self.node.interest_nodes)+".txt", dtype=int)
+				self.shortest_path = np.loadtxt("shortest_paths_list.txt", dtype=int)
 
 		self.getpaths = getpaths
 
@@ -117,9 +116,13 @@ class simulation:
 				if y<self.min_y:
 					self.min_y = y
 			self.heatmap = np.zeros((int(self.max_x-self.min_x)/self.size+1,int(self.max_y-self.min_y)/self.size+1))
-			veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed)
+			veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("7to8",(self.node).num_nodes,len(self.vehicles),self.speed)
+			veh = vehicle.addVehicle("23to24",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
+			self.vehicles.append(veh)
+			veh = vehicle.addVehicle("9to4", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
+			self.vehicles.append(veh)
+			veh = vehicle.addVehicle("15to20", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
 			self.vehicles.append(veh)
 			self.node.setup()
 			self.getpaths()
@@ -136,44 +139,41 @@ class simulation:
 				for veh_id in self.departed:
 					curr_vehicle = self.vehicles[int(veh_id)]
 					curr_vehicle.updateParams()
-				#Create the heatmap
-				for node in range(len(self.node.nodes)):
-					x = int(traci.junction.getPosition(str(node))[0])
-					y = int(traci.junction.getPosition(str(node))[1])
-					self.heatmap[int((x-self.min_x)/self.size),int((y-self.min_y)/self.size)] = self.total_time/self.node.visited[node]
 				#Increase the idleness
-				self.node.nodes[:, 1] = self.node.nodes[:, 1] + 1
+				self.node.nodes[:,1] = self.node.nodes[:,1] + 0.1
 				for node_id in self.node.interest_nodes:
 					self.node.nodes[node_id,4] = self.node.nodes[node_id,3] - self.node.nodes[node_id,1]
 				#Call the algorithm for assigning nodes
-				self.node.nodes = patrolling.hnip(self.departed,self.vehicles,self.node,self.routes,self.paths,self.shortest_path)
+				self.node.nodes = patrolling.DTAG(self.departed,self.vehicles,self.node,self.routes,self.paths,self.shortest_path)
 		self.step = step
 
 
 def simulate():
 	simulator = simulation()
 	simulator.setup()
-	max_freq = str(int(max(simulator.node.nodes[np.where(simulator.node.nodes[:,1] == 0),2][0])))
-
-	with open("idleness_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as file:
-		with open("t_imp_"+str(len(simulator.vehicles))+"_"+max_freq+".csv","w") as imp_file:
-			writer = csv.writer(file)
-			writer.writerow(['time','node','idleness'])
-			writer_imp = csv.writer(imp_file)
-			writer_imp.writerow(['time','node','t_imp'])
-			while simulator.curr_time<simulator.total_time:
-				simulator.step()
-				simulator.curr_time = simulator.curr_time + 1
-				for node in range(len(simulator.node.nodes)):
-					row = simulator.curr_time,node,simulator.node.nodes[node,0]
-					writer.writerow(row)
-				for node in simulator.node.interest_nodes:
-					row = simulator.curr_time,node,simulator.node.nodes[node,3]
-					writer_imp.writerow(row)
-	sns.heatmap(simulator.heatmap.transpose(),vmin=0,vmax=max(simulator.total_time/simulator.node.visited),cbar_kws={'label': 'Idleness'}).invert_yaxis()
+	with open("idleness.csv","w") as file:
+		writer = csv.writer(file)
+		writer.writerow(['time','node','idleness,t_imp'])
+		while simulator.curr_time<simulator.total_time:
+			simulator.step()
+			simulator.curr_time = simulator.curr_time + 0.1
+			for node in range(len(simulator.node.nodes)):
+				row = simulator.curr_time,node,simulator.node.nodes[node,1],simulator.node.nodes[node,4]
+				writer.writerow(row)
+	print(simulator.node.visited)
+	#Create the heatmap
+	for node in range(len(simulator.node.nodes)):
+		x = int(traci.junction.getPosition(str(node))[0])
+		y = int(traci.junction.getPosition(str(node))[1])
+		simulator.heatmap[int((x-simulator.min_x)/simulator.size), int((y-simulator.min_y) /
+											simulator.size)] = simulator.total_time/simulator.node.visited[node]
+		if(simulator.node.visited[node] == 0):
+			simulator.heatmap[int((x-simulator.min_x)/simulator.size),
+										int((y-simulator.min_y)/simulator.size)] = simulator.total_time
+	sns.heatmap(simulator.heatmap.transpose(),vmin=0,vmax=simulator.total_time/min(simulator.node.visited),cbar_kws={'label': 'Idleness'}).invert_yaxis()
 	plt.xlabel('X Co-ordinate')
 	plt.ylabel('Y Co-ordinate')
-	plt.savefig("heatmap"+str(len(simulator.vehicles))+"_"+max_freq+".png")
+	plt.savefig("heatmap.png")
 	plt.show()
 	traci.close()
 	sys.stdout.flush()

@@ -12,12 +12,10 @@
 # @author  Daniel Krajzewicz
 # @date    2008-10-17
 # @version $Id$
-
 from __future__ import absolute_import
 from __future__ import print_function
 persons = {}
 personsRunning = 0
-
 
 class Person:
 

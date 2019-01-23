@@ -24,7 +24,7 @@ import traci.constants as tc
 import vehicleControl
 
 class veh:
-	def __init__(self,curr_edge,num_nodes):
+	def __init__(self,curr_edge,num_nodes,nodes):
 		self.veh_id = 0	#Vehicle ID
 		self.steps = [0]*num_nodes	#Distance to the node
 		self.cost = [0]*num_nodes	#Cost of the node
@@ -50,14 +50,15 @@ class veh:
 		def updateParams():
 			temp = traci.vehicle.getRoadID(str(self.veh_id))
 			if self.curr_edge != temp and temp.find(":") == -1 and len(temp)>1:
+				nodes.visited[int(self.curr_edge[:self.curr_edge.find("to")])] = nodes.visited[int(self.curr_edge[:self.curr_edge.find("to")])] + 1 
 				self.curr_edge = temp
 		self.updateParams = updateParams
 
 
-def addVehicle(start_edge,num_nodes,num_vehicles,max_speed):
+def addVehicle(start_edge,num_nodes,num_vehicles,max_speed,nodes):
 	traci.vehicle.add(str(num_vehicles),start_edge,speed=0)
 	traci.vehicle.setMaxSpeed(str(num_vehicles),max_speed)
-	vehicle = veh(start_edge,num_nodes)
+	vehicle = veh(start_edge,num_nodes,nodes)
 	vehicle.dest_node = int(start_edge[start_edge.find("to")+2:])
 	vehicle.veh_id = str(num_vehicles)
 	return vehicle

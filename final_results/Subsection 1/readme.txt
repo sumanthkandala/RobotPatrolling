@@ -1,0 +1,5 @@
+For these simulations, I have chosen the design parameters as follows:
+C1 = 1.0	(Base value. Represents the value of idleness of the nodes in the path)
+C2 = 0.5	(Represents the time period of the nodes of interest in the path. Higher value of C2 will likely cause the paths to have more number of nodes of interest)
+C3 = 2.0	(Represents the length of path. Path length is smaller if C3 has higher value. For smaller path length, there is greater chance of guarantee of more number of nodes of interest if the number of the robots are limited. Also, if the number of robots are the same as the number of nodes of interest, then higher value of C3 will likely yield lesser values of idleness at the nodes of interest)
+C4 = 2.5	(Shortest Path to next node of interest doesn't have any effect for the symmetric 5x5 grid, since all distances are the same)

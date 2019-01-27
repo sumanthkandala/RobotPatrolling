@@ -33,6 +33,7 @@ class veh:
 		self.dest_node = 1	#Node planned to reach
 		self.dest_edge = curr_edge 	#Edge planned to reach
 		self.curr_edge = curr_edge  #Edge presently on
+		self.origin = 0 #Origin Node (For DTAG and for CPG)
 		self.vehicles = 0
 		self.path = []
 		self.path.append(int(curr_edge[:curr_edge.find("to")]))
@@ -50,9 +51,12 @@ class veh:
 		def updateParams():
 			temp = traci.vehicle.getRoadID(str(self.veh_id))
 			if self.curr_edge != temp and temp.find(":") == -1 and len(temp)>1:
-				nodes.visited[int(self.curr_edge[:self.curr_edge.find("to")])] = nodes.visited[int(self.curr_edge[:self.curr_edge.find("to")])] + 1 
+				nodes.visited[int(self.curr_edge[self.curr_edge.find("to")+2:])] = nodes.visited[int(self.curr_edge[self.curr_edge.find("to")+2:])] + 1 
+				nodes.nodes[int(self.curr_edge[self.curr_edge.find("to")+2:]),1] = 0 
 				self.curr_edge = temp
 		self.updateParams = updateParams
+
+		####################################################
 
 
 def addVehicle(start_edge,num_nodes,num_vehicles,max_speed,nodes):
@@ -61,4 +65,5 @@ def addVehicle(start_edge,num_nodes,num_vehicles,max_speed,nodes):
 	vehicle = veh(start_edge,num_nodes,nodes)
 	vehicle.dest_node = int(start_edge[start_edge.find("to")+2:])
 	vehicle.veh_id = str(num_vehicles)
+	vehicle.origin = int(start_edge[:start_edge.find("to")])
 	return vehicle

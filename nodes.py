@@ -24,10 +24,9 @@ import vehicleControl
 
 class node:
 	def __init__(self):
-		self.num_nodes = 25
+		self.num_nodes = 25 #25 for grid, 9 for random 
 		self.nodes = np.zeros((self.num_nodes,6))
-		self.interest_nodes = [0,4,20,24]
-		self.targets = []
+		self.interest_nodes = [0, 4, 20, 24]  # [0,4,20,24] for grid, [0,1,7,8] for random
 		self.visited = np.zeros(self.num_nodes)
 
 		def setup():
@@ -36,7 +35,7 @@ class node:
 			for node_id in self.interest_nodes:
 				self.nodes[node_id][1] = 0 #Idleness
 				self.nodes[node_id][2] = 1 #1 indicates a node of interest
-				self.nodes[node_id][3] = 4 #Timeperiod
+				self.nodes[node_id][3] = 2 #Timeperiod
 				self.nodes[node_id][4] = 0 #T_importance
 				self.nodes[node_id][5] = 1 #1 == Unvisited
 			#self.nodes[6][3] = 41

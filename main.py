@@ -21,7 +21,7 @@ import vehicleControl
 #SIMULATION OPTIONS
 def get_options():
     optParser = optparse.OptionParser()
-    optParser.add_option("--nogui", action="store_true",
+    optParser.add_option("--gui", action="store_true",
                          default=False, help="run the commandline version of sumo")
     options, args = optParser.parse_args()
     return options
@@ -34,13 +34,13 @@ if __name__ == "__main__":
 
     # this script has been called from the command line. It will start sumo as a
     # server, then connect and run
-    if options.nogui:
-        sumoBinary = checkBinary('sumo')
-    else:
+    if options.gui:
         sumoBinary = checkBinary('sumo-gui')
+    else:
+        sumoBinary = checkBinary('sumo')
 
     # this is the normal way of using traci. sumo is started as a
     # subprocess and then the python script connects and runs
-    traci.start([sumoBinary, "-c", "graph_data/hello.sumocfg"])
+    traci.start([sumoBinary, "-c", "graph_data/simulation.sumocfg"])
     #call the simulation function
     simulation.simulate()

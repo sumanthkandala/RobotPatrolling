@@ -1,0 +1,11 @@
+time,node,idleness,t_imp,visits
+500,0,inf,0,0
+500,1,inf,0,0
+500,2,inf,0,0
+500,3,inf,0,0
+500,4,0,0,inf
+500,5,0,0,inf
+500,6,inf,0,0
+500,7,inf,0,0
+500,8,inf,0,0
+500,9,inf,0,0

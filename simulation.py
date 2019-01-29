@@ -140,11 +140,9 @@ class simulation:
 			veh = vehicle.addVehicle("15to10", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
 			self.vehicles.append(veh) """
 			#FOR CPR
-			""" veh = vehicle.addVehicle("2to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
+			""" veh = vehicle.addVehicle("4to1",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("7to8",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
-			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("4to1", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
+			veh = vehicle.addVehicle("2to7",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh) """
 			self.node.setup()
 			self.getpaths()

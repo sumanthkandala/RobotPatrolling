@@ -27,7 +27,7 @@ global C1,C2,C3,C4,theta1,theta2,theta3
 C1 = 1.0
 C2 = 0.5
 C3 = 2.0
-C4 = 2.5
+C4 = 10.0
 theta1 = 1.0
 theta2 = -0.75
 theta3 = -5.0
@@ -223,20 +223,30 @@ def CPG(departed, vehicles, nodes, routes_list, path_list, shortest_path):
 def CPR(departed, vehicles, nodes, routes_list, path_list, shortest_path):
 	veh0 = vehicles[0]
 	veh1 = vehicles[1]
-	veh2 = vehicles[2]
-	if veh0.curr_edge == "0to2":
-		veh0.changeTarget("2to0")
-	elif veh0.curr_edge == "2to0":
-		veh0.changeTarget("0to2")
+	if veh0.curr_edge == veh0.dest_edge:
+		if veh0.curr_edge == "4to1":
+			veh0.changeTarget("4to3")
+		elif veh0.curr_edge == "4to3":
+			if veh0.origin > 0:
+				veh0.changeTarget("9to8")
+			else:
+				veh0.changeTarget("4to1")
+			veh0.origin = -veh0.origin
+		elif veh0.curr_edge == "9to8":
+			if veh0.origin < 0:
+				veh0.changeTarget("5to2")
+			else:
+				veh0.changeTarget("4to3")
+			veh0.origin = -veh0.origin
+		elif veh0.curr_edge == "5to2":
+			veh0.changeTarget("9to8")
 
-	if veh1.curr_edge == "7to8":
-		veh1.changeTarget("8to7")
-	elif veh1.curr_edge == "8to7":
-		veh1.changeTarget("7to8")
-
-	if veh2.curr_edge == "4to1":
-		veh2.changeTarget("6to5")
-	elif veh2.curr_edge == "6to5":
-		veh2.changeTarget("4to1")
+	if veh1.curr_edge == veh1.dest_edge:
+		if veh1.curr_edge == "2to7":
+			veh1.changeTarget("2to0")
+		elif veh1.curr_edge == "2to0":
+			veh1.changeTarget("4to1")
+		elif veh1.curr_edge == "4to1":
+			veh1.changeTarget("2to7")
 
 	return nodes.nodes[:]

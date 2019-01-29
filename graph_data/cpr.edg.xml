@@ -10,10 +10,12 @@
   <edge from="6" id="6to4" to="4" />
   <edge from="5" id="5to6" to="6" />
   <edge from="6" id="6to5" to="5" />
-  <edge from="8" id="8to7" to="7" />
-  <edge from="7" id="7to8" to="8" />
   <edge from="2" id="2to7" to="7" />
   <edge from="7" id="7to2" to="2" />
-  <edge from="8" id="8to5" to="5" />
-  <edge from="5" id="5to8" to="8" />
+  <edge from="2" id="2to5" to="5" />
+  <edge from="5" id="5to2" to="2" />
+  <edge from="9" id="9to5" to="5" />
+  <edge from="5" id="5to9" to="9" />
+  <edge from="9" id="9to8" to="8" />
+  <edge from="8" id="8to9" to="9" />
 </edges>

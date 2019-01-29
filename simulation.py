@@ -119,23 +119,19 @@ class simulation:
 					self.min_y = y
 			self.heatmap = np.zeros((int(self.max_x-self.min_x)/self.size+1,int(self.max_y-self.min_y)/self.size+1))
 			#For Grid
-			veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
+			""" veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh)
 			veh = vehicle.addVehicle("23to24",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh)
 			veh = vehicle.addVehicle("9to4", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
-			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("15to20", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
-			self.vehicles.append(veh)
-			#For Random
-			""" veh = vehicle.addVehicle("2to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
-			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("2to7",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
-			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("5to8", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
-			self.vehicles.append(veh)
-			veh = vehicle.addVehicle("4to1", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
 			self.vehicles.append(veh) """
+			""" veh = vehicle.addVehicle("15to20", (self.node).num_nodes, len(self.vehicles), self.speed,self.node)
+			self.vehicles.append(veh) """
+			#For Random
+			veh = vehicle.addVehicle("6to5",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
+			self.vehicles.append(veh)
+			veh = vehicle.addVehicle("1to4",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
+			self.vehicles.append(veh)
 			#FOR CPG
 			""" veh = vehicle.addVehicle("1to0",(self.node).num_nodes,len(self.vehicles),self.speed,self.node)
 			self.vehicles.append(veh)

@@ -1,6 +1,6 @@
 <configuration>
   <input>
-      <net-file value="grid.net.xml"/>
+      <net-file value="random.net.xml"/>
       <route-files value="simulation.rou.xml"/>
       <gui-settings-file value="simulation.settings.xml"/>
   </input>
